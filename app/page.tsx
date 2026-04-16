@@ -1,21 +1,11 @@
 'use client';
 
-// DESIGN DECISIONS:
-// Layout Energy: editorial
-// Depth Treatment: layered
-// Divider Style: D-QUOTE
-// Typography Personality: refined
-
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { 
   Shirt, 
-  Tag, 
-  Gem, 
-  Leaf, 
-  Trophy, 
-  ShoppingBag, 
-  Users, 
+  Heart, 
+  Truck, 
   Instagram, 
   Phone, 
   Mail, 
@@ -26,60 +16,73 @@ import {
   CheckCheck, 
   Loader2, 
   ImageOff,
-  ChevronRight
+  ShoppingBag,
+  Award,
+  Users
 } from 'lucide-react';
 
-// --- DATA FROM BRIEF ---
+// DESIGN DECISIONS:
+// Layout Energy: bold
+// Depth Treatment: layered
+// Divider Style: D-QUOTE
+// Typography Personality: oversized
+
+// --- Types & Data ---
+
 const brand = {
   name: "Maggys Kollection",
-  tagline: "Strength & Dignity in Every Stitch",
-  description: "A premium thrift boutique for the modern woman who wears her confidence as boldly as her clothes. Curating elite second-hand pieces that tell a story of resilience and grace.",
-  industry: "Fashion",
-  region: "Nigeria",
+  tagline: "Adorned in Strength and Dignity",
+  description: "A premium thrift boutique delivering curated, high-end fashion pieces for the modern woman in Ibadan, Ilorin, and beyond.",
+  industry: "fashion",
+  region: "nigeria",
   currency: "₦"
 };
 
 const IMAGES = {
-  hero: "https://images.unsplash.com/photo-1747814965215-15a273e27aa6?q=80&w=1080",
+  hero: "https://images.unsplash.com/photo-1665309421756-7a28ea27574b?q=80&w=1080",
   products: [
-    "https://images.unsplash.com/photo-1575225395866-965c8c77727f?q=80&w=1080",
-    "https://images.unsplash.com/photo-1696132445229-d1fb9f35622c?q=80&w=1080",
-    "https://images.unsplash.com/photo-1599826394976-0b84fed84e09?q=80&w=1080",
-    "https://images.unsplash.com/photo-1666979287868-354d20716faf?q=80&w=1080"
+    "https://images.unsplash.com/photo-1673173044405-aced8fca904a?q=80&w=1080",
+    "https://images.unsplash.com/photo-1614845349308-338763323d3d?q=80&w=1080",
+    "https://images.unsplash.com/photo-1724313802694-a33bd63f26b2?q=80&w=1080",
+    "https://images.unsplash.com/photo-1773394171061-fdce7f7104e5?q=80&w=1080"
   ],
   gallery: [
-    "https://images.unsplash.com/photo-1602193009300-85e1200ac801?q=80&w=1080",
-    "https://images.unsplash.com/photo-1684296662189-7f8b1456ae09?q=80&w=1080",
-    "https://images.unsplash.com/photo-1747817330508-315506ed9487?q=80&w=1080"
+    "https://images.unsplash.com/photo-1725121225009-3d7e049fb8a6?q=80&w=1080",
+    "https://images.unsplash.com/photo-1667819953753-79bbe4018855?q=80&w=1080",
+    "https://images.unsplash.com/photo-1555249434-776c01c937b0?q=80&w=1080",
+    "https://images.unsplash.com/photo-1708523842501-800cd1c7505e?q=80&w=1080",
+    "https://images.unsplash.com/photo-1681657862057-f5b4b7596c59?q=80&w=1080",
+    "https://images.unsplash.com/photo-1760097679488-f808c6aca11d?q=80&w=1080"
   ]
 };
 
-const products = [
-  { name: "Vintage Oversized Blazer", description: "Structured shoulders and premium wool blend for an effortless editorial look.", price: "₦18,500" },
-  { name: "Signature Silk Slip Dress", description: "Luxe champagne silk with a delicate lace hem. Perfect for layering.", price: "₦12,000" },
-  { name: "Retro High-Waist Denim", description: "Thrifted 90s aesthetic with a modern tapered fit. Authentic vintage wash.", price: "₦8,500" },
-  { name: "The 'Dignity' Leather Trench", description: "Statement piece in mahogany vegan leather. A true collector's find.", price: "₦45,000" }
+const features = [
+  { title: "Curated Drops", description: "Every item is hand-selected to ensure it meets our premium quality standards.", icon: Shirt },
+  { title: "Strength & Dignity", description: "Fashion that empowers the spirit and honors your unique journey.", icon: Heart },
+  { title: "Swift Delivery", description: "Fast and secure shipping across Ibadan, Ilorin, and nationwide.", icon: Truck }
 ];
 
-const features = [
-  { title: "Elite Curation", description: "Every piece is hand-picked for quality, character, and trend-relevance.", icon: Gem },
-  { title: "Sustainable Luxury", description: "Redefining fashion by giving high-end garments a second life without the waste.", icon: Leaf },
-  { title: "Street Heritage", description: "Fusing urban aesthetics with timeless elegance for the Ibadan fashionista.", icon: Trophy }
+const products = [
+  { name: "Vintage Silk Structure Blazer", description: "Hand-selected premium silk blend, tailored for a powerful silhouette.", price: "₦28,500" },
+  { name: "The 'Dignity' Maxi Dress", description: "Flowing fabric meeting structural elegance. A statement of grace.", price: "₦35,000" },
+  { name: "Curated Denim Co-ord", description: "Street-luxe two-piece set, perfectly weathered and uniquely thrifted.", price: "₦45,000" },
+  { name: "Luxe Leather Carryall", description: "Timeless accessory sourced for durability and high-fashion appeal.", price: "₦18,500" }
 ];
 
 const stats = [
-  { number: "9k+", label: "Style Followers" },
-  { number: "2.7k", label: "Curated Items" },
-  { number: "100%", label: "Authentic Finds" }
+  { number: "9k+", label: "Followers", icon: Users },
+  { number: "2.7k+", label: "Curated Items", icon: ShoppingBag },
+  { number: "100%", label: "Authentic Luxe", icon: Award }
 ];
 
 const testimonials = [
-  { name: "Adeola O.", text: "The quality of the blazer I got is insane. You'd never know it was thrifted. Pure class!", role: "Ibadan Stylist" },
-  { name: "Titi Bello", text: "Finally, a thrift store that understands the street-luxe vibe. The delivery was so fast to Ilorin.", role: "Fashion Influencer" }
+  { name: "Oluwatoyin A.", text: "The quality of the blazer I got is insane. You wouldn't even know it's thrifted!", role: "Ibadan Client" },
+  { name: "Fatimah Z.", text: "Maggys Kollection is the only place I trust for unique street-luxe pieces in Ilorin.", role: "Regular Shopper" }
 ];
 
-// --- HOOKS ---
-const useScrollReveal = (threshold = 0.15) => {
+// --- Components ---
+
+function useScrollReveal(threshold = 0.15) {
   const ref = useRef<HTMLElement>(null);
   const [isVisible, setIsVisible] = useState(false);
   useEffect(() => {
@@ -91,9 +94,8 @@ const useScrollReveal = (threshold = 0.15) => {
     return () => observer.disconnect();
   }, [threshold]);
   return { ref, isVisible };
-};
+}
 
-// --- COMPONENTS ---
 function SafeImage({ src, alt, fill, width, height, className, priority }: {
   src: string; alt: string; fill?: boolean; width?: number; height?: number;
   className?: string; priority?: boolean;
@@ -101,8 +103,8 @@ function SafeImage({ src, alt, fill, width, height, className, priority }: {
   const [error, setError] = useState(false);
   if (error) {
     return (
-      <div className={`flex items-center justify-center bg-zinc-900 ${className}`}>
-        <ImageOff size={24} className="text-white/10" />
+      <div className={`flex items-center justify-center bg-accent/10 ${className}`}>
+        <ImageOff size={28} className="text-accent/20" />
       </div>
     );
   }
@@ -116,8 +118,11 @@ function SafeImage({ src, alt, fill, width, height, className, priority }: {
 }
 
 export default function Page() {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [formState, setFormState] = useState({ name: '', email: '', message: '' });
+  const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -125,256 +130,125 @@ export default function Page() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Section Refs
-  const heroReveal = useScrollReveal(0.1);
-  const featuresReveal = useScrollReveal(0.2);
-  const productsReveal = useScrollReveal(0.2);
-  const aboutReveal = useScrollReveal(0.2);
-  const testimonialsReveal = useScrollReveal(0.2);
-  const contactReveal = useScrollReveal(0.2);
-
-  // Form State
-  const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' });
-  const [sent, setSent] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setTimeout(() => { setLoading(false); setSent(true); }, 1500);
   };
 
-  return (
-    <main className="min-h-screen bg-primary">
-      {/* NAVIGATION */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-primary/95 backdrop-blur-xl border-b border-white/5 py-4' : 'bg-transparent py-6'}`}>
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-          <a href="#home" className="group">
-            <span className="font-heading text-2xl md:text-3xl font-black text-white tracking-tighter">
-              MAGGYS <span className="text-accent">KOLLECTION</span>
-            </span>
-          </a>
+  const navLinks = [
+    { name: "Home", href: "#home" },
+    { name: "The Collection", href: "#products" },
+    { name: "Our Story", href: "#about" },
+    { name: "Contact", href: "#contact" }
+  ];
 
+  // Section Refs
+  const heroReveal = useScrollReveal();
+  const featuresReveal = useScrollReveal();
+  const productsReveal = useScrollReveal();
+  const galleryReveal = useScrollReveal();
+  const aboutReveal = useScrollReveal();
+  const testimonialsReveal = useScrollReveal();
+  const contactReveal = useScrollReveal();
+
+  return (
+    <main className="relative overflow-x-hidden bg-primary">
+      
+      {/* --- Navigation --- */}
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-primary/90 backdrop-blur-xl shadow-lg py-4' : 'bg-transparent py-6'}`}>
+        <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+          <a href="#home" className="text-2xl font-black tracking-tighter text-accent font-heading">
+            MAGGYS<span className="text-secondary">.</span>K
+          </a>
+          
           <div className="hidden md:flex items-center gap-10">
-            {['Drops', 'The Experience', 'Our Sentiment', 'Contact'].map((link) => (
-              <a key={link} href={`#${link.toLowerCase().replace(' ', '-')}`} className="text-white/60 hover:text-accent text-xs font-bold uppercase tracking-[0.2em] transition-colors">
-                {link}
+            {navLinks.map((link) => (
+              <a key={link.name} href={link.href} className="text-sm font-bold uppercase tracking-widest text-accent hover:text-secondary transition-colors">
+                {link.name}
               </a>
             ))}
-            <a href="#products" className="bg-accent text-primary px-6 py-2.5 rounded-full font-black text-sm hover:scale-105 transition-transform">
-              Shop the Drop
+            <a href="#contact" className="bg-accent text-primary px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest hover:scale-105 transition-all">
+              Shop Now
             </a>
           </div>
 
-          <button onClick={() => setMenuOpen(true)} className="md:hidden text-white p-2">
-            <Menu size={24} />
+          <button className="md:hidden text-accent" onClick={() => setIsMenuOpen(true)}>
+            <Menu size={28} />
           </button>
         </div>
       </nav>
 
-      {/* MOBILE SIDEBAR */}
-      <div className={`fixed inset-0 z-[100] transition-transform duration-500 ease-in-out ${menuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMenuOpen(false)} />
-        <div className="absolute right-0 top-0 h-full w-[80%] max-w-sm bg-primary border-l border-white/10 p-10 flex flex-col">
-          <button onClick={() => setMenuOpen(false)} className="self-end text-white/50 mb-12">
+      {/* --- Mobile Sidebar --- */}
+      <div className={`fixed inset-0 z-[60] transition-transform duration-500 ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+        <div className="absolute inset-0 bg-accent/40 backdrop-blur-sm" onClick={() => setIsMenuOpen(false)} />
+        <div className="absolute right-0 top-0 h-full w-[80%] max-w-sm bg-primary p-10 flex flex-col">
+          <button className="self-end text-accent mb-12" onClick={() => setIsMenuOpen(false)}>
             <X size={32} />
           </button>
           <div className="flex flex-col gap-8">
-            {['Drops', 'The Experience', 'Our Sentiment', 'Contact'].map((link) => (
-              <a key={link} onClick={() => setMenuOpen(false)} href={`#${link.toLowerCase().replace(' ', '-')}`} className="text-4xl font-heading font-black text-white">
-                {link}
+            {navLinks.map((link) => (
+              <a key={link.name} href={link.href} className="text-3xl font-black text-accent font-heading" onClick={() => setIsMenuOpen(false)}>
+                {link.name}
               </a>
             ))}
           </div>
-          <div className="mt-auto space-y-6 pt-10 border-t border-white/10">
-            <p className="text-accent font-bold uppercase tracking-widest text-xs">Stay Connected</p>
-            <div className="flex gap-4">
-              <Instagram className="text-white/40" />
-              <Phone className="text-white/40" />
-            </div>
+          <div className="mt-auto border-t border-accent/10 pt-8">
+            <p className="text-accent/60 text-sm font-medium">Follow us on IG</p>
+            <p className="text-accent font-bold mt-1 text-lg">@maggys_kollection.ng</p>
           </div>
         </div>
       </div>
 
-      {/* HERO SECTION - HR-A PATTERN */}
-      <section id="home" ref={heroReveal.ref} className="min-h-screen relative flex items-center justify-center bg-gradient-to-br from-primary via-primary to-accent/10 px-6 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-[40rem] h-[40rem] bg-accent/5 rounded-full blur-[150px] pointer-events-none animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] bg-accent/8 rounded-full blur-[120px] pointer-events-none" />
+      {/* --- Hero Section (HR-A Pattern) --- */}
+      <section id="home" className="min-h-screen relative flex items-center justify-center px-6 pt-20 overflow-hidden">
+        <div className="absolute top-1/4 left-1/4 w-[40rem] h-[40rem] bg-secondary/30 rounded-full blur-[120px] pointer-events-none animate-float" />
+        <div className="absolute bottom-1/4 right-1/3 w-80 h-80 bg-accent/5 rounded-full blur-[80px] pointer-events-none" />
         
-        <div className={`relative z-10 text-center max-w-5xl transition-all duration-1000 ${heroReveal.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
-          <h1 className="font-heading text-6xl md:text-9xl font-black text-white leading-[0.9] tracking-tighter">
-            Strength & Dignity <br /> 
-            <span className="text-accent italic font-light tracking-normal">are her clothing.</span>
+        <div ref={heroReveal.ref} className={`relative z-10 text-center max-w-5xl transition-all duration-1000 ${heroReveal.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
+          <h1 className="font-heading text-6xl md:text-[9rem] font-black text-accent leading-[0.85] tracking-tighter">
+            SHE IS CLOTHED IN<br />
+            <span className="text-secondary drop-shadow-sm">STRENGTH.</span>
           </h1>
-          <p className="text-white/50 mt-10 text-xl md:text-2xl max-w-2xl mx-auto leading-relaxed font-light">
-            Premium Thrift for the woman who laughs at the days to come. Experience the new standard of curated street-luxe.
+          <p className="text-accent/70 mt-10 text-xl md:text-2xl max-w-2xl mx-auto font-medium">
+            Experience the ultimate street-luxe thrift collection. Clothed with dignity, laughing at the days to come.
           </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center mt-12">
-            <a href="#products" className="bg-accent text-primary px-12 py-5 font-black text-lg hover:brightness-110 hover:scale-105 transition-all duration-300 rounded-full shadow-2xl">
+          <div className="flex flex-col sm:flex-row gap-5 justify-center mt-12">
+            <a href="#products" className="bg-accent text-primary px-12 py-5 font-black text-lg uppercase tracking-widest hover:brightness-110 hover:scale-105 transition-all shadow-2xl">
               Shop the Drop
             </a>
-            <a href="#the-experience" className="border border-white/20 text-white px-12 py-5 font-medium text-lg hover:bg-white/5 transition-all duration-300 rounded-full backdrop-blur-md">
-              The Experience
+            <a href="#about" className="bg-secondary text-accent px-12 py-5 font-black text-lg uppercase tracking-widest hover:brightness-95 transition-all">
+              Our Vision
             </a>
           </div>
         </div>
-
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3">
-          <span className="text-white/20 text-[10px] uppercase tracking-[0.5em] font-bold">Scroll Down</span>
-          <div className="w-px h-12 bg-gradient-to-b from-accent to-transparent" />
-        </div>
       </section>
 
-      {/* DIVIDER: D-QUOTE */}
-      <div className="py-24 px-8 text-center bg-accent/5 border-y border-white/5 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--accent)/5,transparent_70%)]" />
-        <p className="relative font-heading text-3xl md:text-6xl font-black text-white max-w-4xl mx-auto leading-tight italic opacity-90">
-          &ldquo;{brand.tagline}&rdquo;
+      {/* --- Divider --- */}
+      <div className="py-24 px-8 text-center bg-accent/5 border-y border-accent/10 relative overflow-hidden">
+        <p className="relative font-heading text-3xl md:text-5xl font-black text-accent max-w-3xl mx-auto leading-tight italic">
+          &ldquo;Strength and dignity are her clothing, and she laughs at the time to come.&rdquo;
         </p>
-        <p className="relative text-white/20 mt-8 text-xs tracking-[0.6em] uppercase font-bold">{brand.name} — Nigeria</p>
+        <p className="relative text-accent/40 mt-6 text-sm tracking-[0.5em] uppercase font-bold">Proverbs 31:25</p>
       </div>
 
-      {/* FEATURES SECTION - F-NUMBERED */}
-      <section id="the-experience" ref={featuresReveal.ref} className="py-32 px-6 bg-primary">
-        <div className="max-w-5xl mx-auto">
-          <div className="mb-20">
-            <h2 className="font-heading text-5xl md:text-7xl font-black text-white mb-6">The Thrift Experience</h2>
-            <p className="text-white/40 text-lg max-w-lg">Why Maggys Kollection is the elite choice for vintage style in West Africa.</p>
-          </div>
-          <div className="divide-y divide-white/10 border-t border-white/10">
-            {features.map((f, i) => (
-              <div key={i} className={`py-16 flex flex-col md:flex-row items-start gap-12 transition-all duration-700 ${featuresReveal.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}
-                style={{ transitionDelay: `${i * 150}ms` }}>
-                <span className="font-heading text-accent/20 text-7xl font-black tracking-tighter shrink-0 w-24 leading-none">
-                  0{i + 1}
-                </span>
-                <div className="flex-1">
-                  <h3 className="font-heading text-3xl font-bold text-white mb-4">{f.title}</h3>
-                  <p className="text-white/50 text-xl leading-relaxed max-w-2xl">{f.description}</p>
-                </div>
-                <div className="w-16 h-16 rounded-3xl bg-accent/5 border border-white/10 flex items-center justify-center shrink-0 text-accent">
-                  <f.icon size={32} />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* PRODUCTS SECTION - P-ASYMMETRIC */}
-      <section id="drops" ref={productsReveal.ref} className="py-32 px-6 bg-secondary">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row items-end justify-between mb-20 gap-8">
-            <h2 className="font-heading text-6xl md:text-8xl font-black text-primary leading-none">Featured <br />Drops</h2>
-            <div className="text-primary/60 max-w-xs text-right space-y-4">
-              <p className="text-sm font-bold uppercase tracking-widest text-primary/40">Fresh arrivals. Hand-curated. Highly limited.</p>
-              <p className="text-lg">Each garment carries the mark of quality and a legacy of grace.</p>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-            {/* Main Feature */}
-            <div className={`md:col-span-7 group relative rounded-[2.5rem] overflow-hidden transition-all duration-1000 ${productsReveal.isVisible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}>
-              <div className="relative h-[600px] md:h-[750px]">
-                <SafeImage src={IMAGES.products[0]} alt={products[0].name} fill className="object-cover transition-transform duration-1000 group-hover:scale-110" />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/20 to-transparent" />
-                <div className="absolute bottom-0 p-12 w-full">
-                  <span className="bg-accent/20 backdrop-blur-md text-accent px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest mb-6 inline-block">Collector's Pick</span>
-                  <h3 className="font-heading text-4xl md:text-6xl font-black text-white">{products[0].name}</h3>
-                  <div className="flex flex-col md:flex-row md:items-center justify-between mt-6 gap-6">
-                    <p className="text-white/60 text-lg max-w-sm">{products[0].description}</p>
-                    <div className="flex items-center gap-6">
-                      <span className="text-accent font-black text-4xl">{products[0].price}</span>
-                      <a href="#contact" className="bg-accent text-primary p-4 rounded-full hover:scale-110 transition-transform">
-                        <ShoppingBag size={24} />
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Side Grid */}
-            <div className="md:col-span-5 flex flex-col gap-8">
-              {products.slice(1, 3).map((p, i) => (
-                <div key={i} className={`group relative rounded-[2rem] overflow-hidden flex-1 transition-all duration-1000 delay-300 ${productsReveal.isVisible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}>
-                  <div className="relative h-[300px] md:h-full">
-                    <SafeImage src={IMAGES.products[i + 1]} alt={p.name} fill className="object-cover group-hover:scale-110 transition-transform duration-1000" />
-                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors" />
-                    <div className="absolute inset-0 p-10 flex flex-col justify-end">
-                      <h3 className="font-heading text-3xl font-black text-white mb-2">{p.name}</h3>
-                      <div className="flex items-center justify-between">
-                        <span className="text-accent font-black text-xl">{p.price}</span>
-                        <a href="#contact" className="text-white text-sm font-bold border-b border-accent pb-1 flex items-center gap-2 group-hover:gap-4 transition-all">
-                          Order <ChevronRight size={16} />
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ABOUT SECTION - V3 (Horizontal Split) with Proverbs Motif */}
-      <section id="our-sentiment" ref={aboutReveal.ref} className="py-32 px-6 bg-primary overflow-hidden">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-20 items-center">
-          <div className={`relative transition-all duration-1000 ${aboutReveal.isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-20'}`}>
-            <div className="absolute -top-10 -left-10 text-[18vw] font-black text-white/5 font-heading leading-none pointer-events-none select-none">31:25</div>
-            <p className="text-accent font-mono text-xs tracking-[0.5em] uppercase mb-8 font-bold">The Sentiment</p>
-            <h2 className="font-heading text-5xl md:text-7xl font-black text-white leading-tight mb-8">
-              The Proverbs <br /><span className="text-accent italic font-light">31:25 Standard</span>
-            </h2>
-            <p className="text-white/60 text-xl leading-relaxed mb-10">
-              Founded on the belief that fashion should empower the soul as much as the body. Maggys Kollection isn&apos;t just about thrift; it&apos;s about the resilience and grace of the Nigerian woman.
-            </p>
-            <p className="text-white/40 text-lg leading-relaxed mb-16 italic">
-              We source pieces that reflect your inner strength, ensuring you step out with a dignity that cannot be ignored. Every stitch is a prayer, every garment a testimony.
-            </p>
-            
-            <div className="grid grid-cols-3 gap-8 border-t border-white/10 pt-10">
-              {stats.map((s, i) => (
-                <div key={i} className={`transition-all duration-1000`} style={{ transitionDelay: `${600 + i * 200}ms` }}>
-                  <p className="font-heading text-4xl font-black text-white">{s.number}</p>
-                  <p className="text-white/40 text-[10px] uppercase tracking-widest font-bold mt-2">{s.label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className={`relative aspect-[3/4] transition-all duration-1000 delay-300 ${aboutReveal.isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-20'}`}>
-            <div className="absolute inset-0 border border-accent/20 translate-x-6 translate-y-6 rounded-[3rem]" />
-            <div className="relative h-full w-full rounded-[3rem] overflow-hidden shadow-2xl">
-              <SafeImage src={IMAGES.hero} alt="The Sentiment" fill className="object-cover grayscale hover:grayscale-0 transition-all duration-700" />
-            </div>
-            <div className="absolute -bottom-8 -left-8 bg-accent p-10 rounded-3xl shadow-2xl max-w-xs">
-              <p className="text-primary font-black text-2xl leading-tight">Serving the elite Ibadan fashion scene since 2021.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* TESTIMONIALS - T-MASONRY */}
-      <section ref={testimonialsReveal.ref} className="py-32 px-6 bg-secondary">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-24">
-            <p className="text-primary/40 font-mono text-xs tracking-[0.4em] uppercase mb-4 font-bold">Voices of the Kollection</p>
-            <h2 className="font-heading text-5xl md:text-7xl font-black text-primary">Styled by Grace</h2>
-          </div>
-          <div className="columns-1 md:columns-2 gap-8 space-y-8">
-            {testimonials.map((t, i) => (
-              <div key={i} className={`break-inside-avoid bg-white p-12 rounded-[2.5rem] shadow-xl border border-primary/5 transition-all duration-700 ${testimonialsReveal.isVisible ? 'opacity-100 translate-y-0 blur-0' : 'opacity-0 translate-y-12 blur-sm'}`}
-                style={{ transitionDelay: `${i * 150}ms` }}>
-                <p className="text-primary/80 text-2xl leading-relaxed italic mb-10">&ldquo;{t.text}&rdquo;</p>
-                <div className="flex items-center gap-4 border-t border-primary/10 pt-8">
-                  <div className="w-14 h-14 rounded-full bg-accent flex items-center justify-center text-primary font-black text-xl">
-                    {t.name.charAt(0)}
+      {/* --- Features (Sticky Reveal) --- */}
+      <section ref={featuresReveal.ref} className="py-28 bg-primary px-6">
+        <div className="max-w-4xl mx-auto">
+          <div className="space-y-6">
+            {features.map((f, idx) => (
+              <div 
+                key={idx} 
+                className={`sticky group transition-all duration-700 ${featuresReveal.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`} 
+                style={{ top: `${100 + idx * 30}px`, transitionDelay: `${idx * 150}ms` }}
+              >
+                <div className="bg-secondary rounded-3xl p-10 border border-accent/5 shadow-xl flex items-start gap-8">
+                  <div className="w-16 h-16 rounded-2xl bg-accent text-primary flex items-center justify-center shrink-0 group-hover:rotate-6 transition-transform">
+                    <f.icon size={32} />
                   </div>
                   <div>
-                    <p className="font-heading font-black text-primary text-xl">{t.name}</p>
-                    <p className="text-primary/40 text-sm font-bold uppercase tracking-widest">{t.role}</p>
+                    <h3 className="font-heading text-3xl font-black text-accent">{f.title}</h3>
+                    <p className="text-accent/60 mt-4 text-lg leading-relaxed">{f.description}</p>
                   </div>
                 </div>
               </div>
@@ -383,67 +257,168 @@ export default function Page() {
         </div>
       </section>
 
-      {/* CONTACT SECTION - C3 Minimal Centered */}
-      <section id="contact" ref={contactReveal.ref} className="py-32 px-6 bg-primary relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-accent/20 to-transparent" />
+      {/* --- Products (Editorial Collection) --- */}
+      <section id="products" ref={productsReveal.ref} className="py-28 bg-secondary">
+        <div className="px-6 max-w-7xl mx-auto mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div>
+            <h2 className="font-heading text-6xl md:text-8xl font-black text-accent leading-none">THE EDITORIAL<br />COLLECTION</h2>
+            <p className="text-accent/60 mt-4 text-xl uppercase tracking-widest font-bold">Premium Thrift, Unparalleled Style</p>
+          </div>
+          <div className="hidden md:block text-accent/40 font-mono text-sm max-w-[200px] text-right">
+            CURATED FOR THE MODERN WOMAN IN IBADAN & ILORIN
+          </div>
+        </div>
+        
+        <div className="flex gap-8 overflow-x-auto pb-12 px-6 snap-x snap-mandatory scrollbar-hide mask-fade">
+          {products.map((p, i) => (
+            <div 
+              key={i} 
+              className={`snap-start shrink-0 w-[85vw] md:w-[450px] group transition-all duration-1000 ${productsReveal.isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
+              style={{ transitionDelay: `${i * 150}ms` }}
+            >
+              <div className="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden mb-8 shadow-2xl bg-primary/20">
+                <SafeImage 
+                  src={IMAGES.products[i] ?? IMAGES.hero} 
+                  alt={p.name} 
+                  fill 
+                  className="object-cover group-hover:scale-110 transition-transform duration-[1.5s]" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-accent/40 to-transparent" />
+                <div className="absolute top-6 right-6 bg-primary text-accent px-4 py-2 rounded-full font-black text-sm">
+                  {p.price}
+                </div>
+              </div>
+              <h3 className="font-heading text-3xl font-black text-accent group-hover:text-primary transition-colors">{p.name}</h3>
+              <p className="text-accent/60 text-lg mt-3 leading-relaxed">{p.description}</p>
+              <a href="#contact" className="inline-flex items-center gap-3 mt-8 bg-accent text-secondary px-8 py-4 rounded-full font-bold text-sm uppercase tracking-widest hover:gap-5 transition-all">
+                Claim this Piece <ArrowRight size={16} />
+              </a>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* --- About Section (Horizontal Split) --- */}
+      <section id="about" ref={aboutReveal.ref} className="py-28 bg-primary overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-20 items-center">
+          <div className={`transition-all duration-1000 ${aboutReveal.isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-20'}`}>
+            <h2 className="font-heading text-6xl md:text-8xl font-black text-accent mb-10 leading-none">OUR<br />ESSENCE</h2>
+            <p className="text-accent/70 text-2xl leading-relaxed mb-12">
+              At Maggys Kollection, we believe style is more than fabric—it is an armor of confidence. 
+              Based in <span className="text-accent font-black">Ibadan and Ilorin</span>, we bridge the gap between 
+              sustainable thrift and high-end editorial luxury.
+            </p>
+            <div className="grid grid-cols-2 gap-10">
+              {stats.map((s, i) => (
+                <div key={i} className={`transition-all duration-1000`} style={{ transitionDelay: `${i * 200}ms` }}>
+                  <p className="font-heading text-5xl font-black text-secondary">{s.number}</p>
+                  <p className="text-accent font-bold uppercase tracking-widest text-sm mt-1">{s.label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className={`relative aspect-[3/4] rounded-[3rem] overflow-hidden shadow-2xl transition-all duration-1000 delay-300 ${aboutReveal.isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-20'}`}>
+            <SafeImage src={IMAGES.gallery[0]} alt="Style story" fill className="object-cover" />
+            <div className="absolute inset-0 border-[20px] border-primary/20 pointer-events-none" />
+          </div>
+        </div>
+      </section>
+
+      {/* --- Style Gallery (Masonry) --- */}
+      <section ref={galleryReveal.ref} className="py-28 px-6 bg-secondary">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-20">
+            <h2 className="font-heading text-5xl md:text-7xl font-black text-accent">STYLE IN MOTION</h2>
+            <p className="text-accent/50 text-xl font-bold uppercase tracking-[0.3em] mt-4">Seeing our community wear their strength</p>
+          </div>
+          <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+            {IMAGES.gallery.map((src, i) => (
+              <div 
+                key={i} 
+                className={`break-inside-avoid group relative rounded-3xl overflow-hidden shadow-xl transition-all duration-1000 ${galleryReveal.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'}`}
+                style={{ transitionDelay: `${i * 100}ms` }}
+              >
+                <SafeImage src={src} alt={`Gallery piece ${i}`} className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700" />
+                <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <Instagram size={40} className="text-accent" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* --- Testimonials --- */}
+      <section ref={testimonialsReveal.ref} className="py-28 px-6 bg-accent text-secondary">
         <div className="max-w-4xl mx-auto text-center">
-          <p className="text-accent font-mono text-xs tracking-[0.4em] uppercase mb-6 font-black">Contact</p>
-          <h2 className={`font-heading text-6xl md:text-8xl font-black text-white mb-10 transition-all duration-1000 ${contactReveal.isVisible ? 'opacity-100 skew-y-0 translate-y-0' : 'opacity-0 skew-y-2 translate-y-12'}`}>
-            Secure the Bag
-          </h2>
-          <p className="text-white/40 mb-16 text-xl max-w-2xl mx-auto leading-relaxed">
-            Ready to claim your piece of history? Reach out via our form below or hit our Instagram DM. Sharp delivery, nationwide.
-          </p>
+          <h2 className="font-heading text-5xl md:text-7xl font-black mb-20">THE VOICE OF THE ADORNED</h2>
+          <div className="space-y-12">
+            {testimonials.map((t, i) => (
+              <div 
+                key={i} 
+                className={`relative py-12 px-10 rounded-[3rem] border border-secondary/10 bg-secondary/5 transition-all duration-1000 ${testimonialsReveal.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+                style={{ transitionDelay: `${i * 200}ms` }}
+              >
+                <p className="text-2xl md:text-3xl italic leading-relaxed text-secondary/90">&ldquo;{t.text}&rdquo;</p>
+                <div className="mt-10 flex items-center justify-center gap-5">
+                  <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center text-accent font-black text-xl border-2 border-secondary">
+                    {t.name.charAt(0)}
+                  </div>
+                  <div className="text-left">
+                    <p className="font-heading text-xl font-bold tracking-widest">{t.name}</p>
+                    <p className="text-secondary/40 text-sm font-bold uppercase tracking-widest">{t.role}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* --- Contact (C3 Pattern) --- */}
+      <section id="contact" ref={contactReveal.ref} className="py-28 px-6 bg-primary">
+        <div className={`max-w-2xl mx-auto text-center transition-all duration-1000 ${contactReveal.isVisible ? 'opacity-100 translate-y-0 skew-y-0' : 'opacity-0 translate-y-10 skew-y-1'}`}>
+          <p className="text-accent font-bold text-xs tracking-[0.5em] uppercase mb-6">Securing the Bag</p>
+          <h2 className="font-heading text-6xl md:text-[5rem] font-black text-accent mb-6 leading-none">GET IN TOUCH</h2>
+          <p className="text-accent/60 mb-12 text-xl font-medium">Available in Ibadan & Ilorin. Nationwide delivery sorted for every piece.</p>
           
           <div className="text-left">
             {sent ? (
-              <div className="flex flex-col items-center justify-center p-16 text-center animate-scaleIn bg-zinc-900 rounded-[3rem] border border-white/5">
-                <div className="w-24 h-24 rounded-full bg-accent/20 flex items-center justify-center mb-8 border border-accent/40">
-                  <CheckCheck size={40} className="text-accent" />
+              <div className="flex flex-col items-center justify-center p-12 text-center animate-scaleIn bg-secondary rounded-[2.5rem] border border-accent/10 shadow-2xl">
+                <div className="w-20 h-20 rounded-full bg-accent text-primary flex items-center justify-center mb-6">
+                  <CheckCheck size={36} />
                 </div>
-                <h3 className="font-heading text-4xl font-black text-white mb-4">Message Sent</h3>
-                <p className="text-white/60 text-lg">Thank you. Our team will review your inquiry and respond shortly.</p>
+                <h3 className="font-heading text-3xl font-black text-accent mb-3">Message Sent</h3>
+                <p className="text-accent/60 max-w-sm text-lg font-medium">Thank you. Sharp delivery, nationwide. Our team will respond shortly.</p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-6 bg-zinc-900/50 p-8 md:p-16 rounded-[3rem] border border-white/5 shadow-2xl backdrop-blur-md">
-                <div className="grid md:grid-cols-2 gap-6">
-                  {(['name', 'email'] as const).map(field => (
-                    <div key={field} className="relative group">
-                      <input
-                        type={field === 'email' ? 'email' : 'text'}
-                        placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-                        value={form[field]}
-                        onChange={e => setForm(prev => ({ ...prev, [field]: e.target.value }))}
-                        required
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-8 py-5 text-white placeholder-white/20 text-lg outline-none transition-all duration-300 focus:bg-white/10 focus:border-accent"
-                      />
-                    </div>
-                  ))}
-                </div>
-                <div className="relative group">
+              <form onSubmit={handleFormSubmit} className="space-y-4 bg-secondary p-8 md:p-12 rounded-[2.5rem] border border-accent/5 shadow-2xl relative">
+                <div className="space-y-4">
                   <input
                     type="text"
-                    placeholder="Phone Number"
-                    value={form.phone}
-                    onChange={e => setForm(prev => ({ ...prev, phone: e.target.value }))}
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-8 py-5 text-white placeholder-white/20 text-lg outline-none transition-all duration-300 focus:bg-white/10 focus:border-accent"
-                  />
-                </div>
-                <div className="relative group">
-                  <textarea rows={5} placeholder="What are you looking for?"
-                    value={form.message}
-                    onChange={e => setForm(prev => ({ ...prev, message: e.target.value }))}
+                    placeholder="Full Name"
                     required
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-8 py-5 text-white placeholder-white/20 text-lg outline-none resize-none transition-all duration-300 focus:bg-white/10 focus:border-accent"
+                    className="w-full bg-primary/20 border border-accent/10 rounded-2xl px-6 py-5 text-accent placeholder-accent/40 text-lg outline-none focus:border-accent transition-all"
+                  />
+                  <input
+                    type="email"
+                    placeholder="Email Address"
+                    required
+                    className="w-full bg-primary/20 border border-accent/10 rounded-2xl px-6 py-5 text-accent placeholder-accent/40 text-lg outline-none focus:border-accent transition-all"
+                  />
+                  <textarea
+                    rows={4}
+                    placeholder="Your inquiry / item details"
+                    required
+                    className="w-full bg-primary/20 border border-accent/10 rounded-2xl px-6 py-5 text-accent placeholder-accent/40 text-lg outline-none resize-none focus:border-accent transition-all"
                   />
                 </div>
-                <button type="submit" disabled={loading}
-                  className="w-full bg-accent text-primary py-6 rounded-2xl font-black text-xl hover:brightness-110 hover:scale-[1.01] transition-all duration-300 disabled:opacity-60 flex justify-center items-center gap-4">
-                  {loading ? (
-                    <><Loader2 className="animate-spin" size={24} /> Processing...</>
-                  ) : (
-                    <>Send Inquiry <ArrowRight size={24} /></>
-                  )}
+                <button 
+                  type="submit" 
+                  disabled={loading}
+                  className="w-full mt-8 bg-accent text-primary py-5 rounded-2xl font-black text-lg uppercase tracking-widest hover:brightness-110 transition-all disabled:opacity-50 flex items-center justify-center gap-3"
+                >
+                  {loading ? <Loader2 className="animate-spin" /> : <>Send Message <ArrowRight /></>}
                 </button>
               </form>
             )}
@@ -451,61 +426,47 @@ export default function Page() {
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="bg-primary pt-24 pb-12 px-6 border-t border-white/5">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-16 mb-20">
+      {/* --- Footer (F2 Pattern) --- */}
+      <footer className="bg-accent text-secondary py-20 px-6">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="md:col-span-2">
-            <span className="font-heading text-4xl font-black text-white tracking-tighter block mb-6">
-              MAGGYS <span className="text-accent italic">KOLLECTION</span>
-            </span>
-            <p className="text-white/40 text-lg max-w-sm leading-relaxed mb-8">
-              Curating high-fashion street-luxe from the heart of Nigeria. Strength, Dignity, and Sustainable Luxury.
+            <h2 className="font-heading text-4xl font-black tracking-tighter mb-6">MAGGYS<span className="text-primary">.</span>K</h2>
+            <p className="text-secondary/60 text-lg max-w-sm font-medium leading-relaxed">
+              Curating high-end street-luxe fashion for the woman clothed in strength and dignity. 
+              Based in Nigeria, delivering nationwide.
             </p>
-            <div className="flex gap-6">
-              <a href="https://instagram.com/@maggys_kollection.ng" className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-accent hover:border-accent transition-all">
-                <Instagram size={20} />
-              </a>
-              <a href="https://wa.me/message/RUY2Y7PBSDQDD1" className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-accent hover:border-accent transition-all">
-                <Phone size={20} />
-              </a>
+          </div>
+          
+          <div>
+            <h4 className="font-heading text-xl font-bold mb-6 tracking-widest uppercase">Visit Us</h4>
+            <div className="space-y-4 text-secondary/60 font-medium">
+              <div className="flex gap-3"><MapPin size={18} className="text-primary shrink-0" /> <p>Ibadan & Ilorin, Nigeria</p></div>
+              <div className="flex gap-3"><Phone size={18} className="text-primary shrink-0" /> <p>Whatsapp Available</p></div>
             </div>
           </div>
           
           <div>
-            <p className="text-white font-black text-lg mb-8">Navigation</p>
-            <ul className="space-y-4">
-              {['Drops', 'The Experience', 'Our Sentiment', 'Contact'].map(link => (
-                <li key={link}>
-                  <a href={`#${link.toLowerCase().replace(' ', '-')}`} className="text-white/40 hover:text-white transition-colors">{link}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <p className="text-white font-black text-lg mb-8">Showrooms</p>
-            <div className="space-y-6">
-              <div className="flex gap-3 text-white/40">
-                <MapPin size={18} className="shrink-0 text-accent" />
-                <p className="text-sm">Ibadan & Ilorin,<br />Nigeria</p>
-              </div>
-              <div className="flex gap-3 text-white/40">
-                <Mail size={18} className="shrink-0 text-accent" />
-                <p className="text-sm">hello@maggyskollection.ng</p>
-              </div>
+            <h4 className="font-heading text-xl font-bold mb-6 tracking-widest uppercase">Connect</h4>
+            <div className="flex gap-4">
+              <a href="https://wa.me/message/RUY2Y7PBSDQDD1" className="w-12 h-12 rounded-full border border-secondary/20 flex items-center justify-center hover:bg-primary hover:text-accent transition-all">
+                <Phone size={20} />
+              </a>
+              <a href="#" className="w-12 h-12 rounded-full border border-secondary/20 flex items-center justify-center hover:bg-primary hover:text-accent transition-all">
+                <Instagram size={20} />
+              </a>
+              <a href="#" className="w-12 h-12 rounded-full border border-secondary/20 flex items-center justify-center hover:bg-primary hover:text-accent transition-all">
+                <Mail size={20} />
+              </a>
             </div>
           </div>
         </div>
         
-        <div className="max-w-7xl mx-auto pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-white/20 text-xs font-bold tracking-widest uppercase">
-            &copy; {new Date().getFullYear()} Maggys Kollection. All Rights Reserved.
-          </p>
-          <p className="text-white/20 text-[10px] tracking-[0.3em] uppercase">
-            Built for the Bold
-          </p>
+        <div className="max-w-7xl mx-auto border-t border-secondary/10 mt-20 pt-10 flex flex-col md:flex-row justify-between items-center gap-6 text-sm font-bold uppercase tracking-widest text-secondary/40">
+          <p>© {new Date().getFullYear()} Maggys Kollection. All rights reserved.</p>
+          <p>Sorted with Strength & Dignity</p>
         </div>
       </footer>
+
     </main>
   );
 }

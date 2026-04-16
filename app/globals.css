@@ -3,25 +3,20 @@
 @tailwind utilities;
 
 :root {
-  --primary: #0d0d0d;
-  --secondary: #f7f4ef;
-  --accent: #e8d5b7;
+  --primary: #7eb6d9;
+  --secondary: #FFF9E3;
+  --accent: #1a1a1a;
 }
 
-html {
-  scroll-behavior: smooth;
+html { scroll-behavior: smooth; }
+body { 
+  overflow-x: hidden; 
+  font-family: var(--font-body); 
+  background: var(--primary); 
+  color: #1a1a1a; 
 }
 
-body {
-  overflow-x: hidden;
-  font-family: var(--font-body);
-  background: var(--primary);
-  color: white;
-}
-
-h1, h2, h3, h4 {
-  font-family: var(--font-heading);
-}
+h1, h2, h3, h4 { font-family: var(--font-heading); text-transform: uppercase; }
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
@@ -35,6 +30,9 @@ h1, h2, h3, h4 {
 .animate-float { animation: float 6s ease-in-out infinite; }
 .animate-slide-left { animation: slide-left 40s linear infinite; }
 
-.line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 .scrollbar-hide::-webkit-scrollbar { display: none; }
+
+.mask-fade {
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
