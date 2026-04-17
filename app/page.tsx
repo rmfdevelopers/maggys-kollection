@@ -77,13 +77,14 @@ const stats = [
 
 const testimonials = [
   { name: "Oluwatoyin A.", text: "The quality of the blazer I got is insane. You wouldn't even know it's thrifted!", role: "Ibadan Client" },
-  { name: "Fatimah Z.", text: "Maggys Kollection is the only place I trust for unique street-luxe pieces in Ilorin.", role: "Regular Shopper" }
+  { name: "Fatimah Z.", text: "Maggys Kollection is the only place I trust for unique street-luxe pieces in Ilorin.", role: "Regular Shopper" },
+  { name: "Blessing E.", text: "The packaging and delivery were seamless. I felt so premium unboxing my piece!", role: "Lagos Client" }
 ];
 
 // --- Components ---
 
-function useScrollReveal(threshold = 0.15) {
-  const ref = useRef<HTMLElement>(null);
+function useScrollReveal<T extends HTMLElement>(threshold = 0.15) {
+  const ref = useRef<T>(null);
   const [isVisible, setIsVisible] = useState(false);
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -94,6 +95,80 @@ function useScrollReveal(threshold = 0.15) {
     return () => observer.disconnect();
   }, [threshold]);
   return { ref, isVisible };
+}
+
+function SectionPinFlip({ features }: { features: any[] }) {
+  const [activeIdx, setActiveIdx] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const totalScrollable = rect.height - window.innerHeight;
+
+      // Only progress when section has entered the viewport from the top
+      if (rect.top > 0 || totalScrollable <= 0) {
+        setActiveIdx(0);
+        return;
+      }
+
+      const scrolled = Math.abs(rect.top);
+      const progress = Math.min(Math.max(scrolled / totalScrollable, 0), 1);
+      const newIdx = Math.min(Math.floor(progress * features.length), features.length - 1);
+      setActiveIdx(newIdx);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [features.length]);
+
+  return (
+    <section ref={containerRef} className="relative h-[250vh] bg-primary">
+      <div className="sticky top-0 h-screen flex items-center overflow-y-visible">
+        <div className="max-w-[90rem] mx-auto w-full px-6 grid md:grid-cols-[1fr_1.1fr] gap-12 md:gap-32 items-center">
+          
+          {/* Left: Pinned Quote */}
+          <div className="pt-10 pr-10">
+            <p className="font-heading text-3xl md:text-5xl font-black text-accent leading-[1.2] md:leading-[1.1] italic relative">
+              <span className="absolute -top-12 -left-8 text-9xl text-accent/5 font-serif select-none">&ldquo;</span>
+              Strength and dignity are her clothing, and she laughs at the time to come.
+            </p>
+            <div className="mt-8 flex items-center gap-4">
+              <div className="h-px w-10 bg-accent/20" />
+              <p className="text-accent/40 text-xs tracking-[0.4em] uppercase font-bold">Proverbs 31:25</p>
+            </div>
+          </div>
+
+          {/* Right: Cycling Feature Cards */}
+          <div className="relative h-[400px] md:h-[350px] w-full">
+            {features.map((f, idx) => (
+              <div 
+                key={idx} 
+                className={`absolute inset-0 transition-all duration-700 ease-out flex items-center
+                  ${idx === activeIdx 
+                    ? 'opacity-100 translate-y-0 scale-100 z-10' 
+                    : idx < activeIdx 
+                      ? 'opacity-0 -translate-y-20 scale-95 z-0' 
+                      : 'opacity-0 translate-y-20 scale-95 z-0'}
+                `}
+              >
+                <div className="bg-secondary rounded-[2.5rem] p-8 md:p-12 border border-accent/5 shadow-[0_40px_100px_rgba(0,0,0,0.08)] flex flex-col md:flex-row items-center md:items-start gap-10 w-full">
+                  <div className="w-16 h-16 md:w-20 md:h-20 rounded-3xl bg-accent text-primary flex items-center justify-center shrink-0 shadow-xl">
+                    <f.icon size={32} />
+                  </div>
+                  <div className="text-center md:text-left">
+                    <h3 className="font-heading text-2xl md:text-3xl font-black text-accent uppercase">{f.title}</h3>
+                    <p className="text-accent/60 mt-4 text-base md:text-lg leading-relaxed font-medium">{f.description}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }
 
 function SafeImage({ src, alt, fill, width, height, className, priority }: {
@@ -124,10 +199,19 @@ export default function Page() {
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const [activeTestimonial, setActiveTestimonial] = useState(0);
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
+    }, 5000); // cycle every 5s
+    return () => clearInterval(interval);
   }, []);
 
   const handleFormSubmit = (e: React.FormEvent) => {
@@ -144,16 +228,16 @@ export default function Page() {
   ];
 
   // Section Refs
-  const heroReveal = useScrollReveal();
-  const featuresReveal = useScrollReveal();
-  const productsReveal = useScrollReveal();
-  const galleryReveal = useScrollReveal();
-  const aboutReveal = useScrollReveal();
-  const testimonialsReveal = useScrollReveal();
-  const contactReveal = useScrollReveal();
+  const heroReveal = useScrollReveal<HTMLDivElement>();
+  const featuresReveal = useScrollReveal<HTMLElement>();
+  const productsReveal = useScrollReveal<HTMLElement>();
+  const galleryReveal = useScrollReveal<HTMLElement>();
+  const aboutReveal = useScrollReveal<HTMLElement>();
+  const testimonialsReveal = useScrollReveal<HTMLElement>();
+  const contactReveal = useScrollReveal<HTMLElement>();
 
   return (
-    <main className="relative overflow-x-hidden bg-primary">
+    <main className="relative bg-primary">
       
       {/* --- Navigation --- */}
       <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-primary/90 backdrop-blur-xl shadow-lg py-4' : 'bg-transparent py-6'}`}>
@@ -206,9 +290,9 @@ export default function Page() {
         <div className="absolute bottom-1/4 right-1/3 w-80 h-80 bg-accent/5 rounded-full blur-[80px] pointer-events-none" />
         
         <div ref={heroReveal.ref} className={`relative z-10 text-center max-w-5xl transition-all duration-1000 ${heroReveal.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
-          <h1 className="font-heading text-6xl md:text-[9rem] font-black text-accent leading-[0.85] tracking-tighter">
-            SHE IS CLOTHED IN<br />
-            <span className="text-secondary drop-shadow-sm">STRENGTH.</span>
+          <h1 className="font-heading text-5xl md:text-8xl font-black text-accent leading-[0.85] tracking-tighter uppercase">
+            PREMIUM<br />
+            <span className="text-secondary drop-shadow-sm">NEW / PREOWNED WEARS.</span>
           </h1>
           <p className="text-accent/70 mt-10 text-xl md:text-2xl max-w-2xl mx-auto font-medium">
             Experience the ultimate street-luxe thrift collection. Clothed with dignity, laughing at the days to come.
@@ -224,38 +308,7 @@ export default function Page() {
         </div>
       </section>
 
-      {/* --- Divider --- */}
-      <div className="py-24 px-8 text-center bg-accent/5 border-y border-accent/10 relative overflow-hidden">
-        <p className="relative font-heading text-3xl md:text-5xl font-black text-accent max-w-3xl mx-auto leading-tight italic">
-          &ldquo;Strength and dignity are her clothing, and she laughs at the time to come.&rdquo;
-        </p>
-        <p className="relative text-accent/40 mt-6 text-sm tracking-[0.5em] uppercase font-bold">Proverbs 31:25</p>
-      </div>
-
-      {/* --- Features (Sticky Reveal) --- */}
-      <section ref={featuresReveal.ref} className="py-28 bg-primary px-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="space-y-6">
-            {features.map((f, idx) => (
-              <div 
-                key={idx} 
-                className={`sticky group transition-all duration-700 ${featuresReveal.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`} 
-                style={{ top: `${100 + idx * 30}px`, transitionDelay: `${idx * 150}ms` }}
-              >
-                <div className="bg-secondary rounded-3xl p-10 border border-accent/5 shadow-xl flex items-start gap-8">
-                  <div className="w-16 h-16 rounded-2xl bg-accent text-primary flex items-center justify-center shrink-0 group-hover:rotate-6 transition-transform">
-                    <f.icon size={32} />
-                  </div>
-                  <div>
-                    <h3 className="font-heading text-3xl font-black text-accent">{f.title}</h3>
-                    <p className="text-accent/60 mt-4 text-lg leading-relaxed">{f.description}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <SectionPinFlip features={features} />
 
       {/* --- Products (Editorial Collection) --- */}
       <section id="products" ref={productsReveal.ref} className="py-28 bg-secondary">
@@ -350,23 +403,24 @@ export default function Page() {
 
       {/* --- Testimonials --- */}
       <section ref={testimonialsReveal.ref} className="py-28 px-6 bg-accent text-secondary">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="font-heading text-5xl md:text-7xl font-black mb-20">THE VOICE OF THE ADORNED</h2>
-          <div className="space-y-12">
+        <div className="max-w-4xl mx-auto text-center relative h-[500px] flex flex-col justify-center overflow-hidden">
+          <h2 className="font-heading text-5xl md:text-7xl font-black mb-16 shrink-0">THE VOICE OF THE ADORNED</h2>
+          <div className="relative flex-grow h-full">
             {testimonials.map((t, i) => (
               <div 
                 key={i} 
-                className={`relative py-12 px-10 rounded-[3rem] border border-secondary/10 bg-secondary/5 transition-all duration-1000 ${testimonialsReveal.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
-                style={{ transitionDelay: `${i * 200}ms` }}
+                className={`absolute inset-0 flex flex-col items-center justify-center transition-all duration-1000 ${i === activeTestimonial ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20 scale-95 pointer-events-none'}`}
               >
-                <p className="text-2xl md:text-3xl italic leading-relaxed text-secondary/90">&ldquo;{t.text}&rdquo;</p>
-                <div className="mt-10 flex items-center justify-center gap-5">
-                  <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center text-accent font-black text-xl border-2 border-secondary">
-                    {t.name.charAt(0)}
-                  </div>
-                  <div className="text-left">
-                    <p className="font-heading text-xl font-bold tracking-widest">{t.name}</p>
-                    <p className="text-secondary/40 text-sm font-bold uppercase tracking-widest">{t.role}</p>
+                <div className="relative py-12 px-10 rounded-[3rem] border border-secondary/10 bg-secondary/5 w-full">
+                  <p className="text-2xl md:text-4xl italic leading-relaxed text-secondary/90">&ldquo;{t.text}&rdquo;</p>
+                  <div className="mt-12 flex items-center justify-center gap-6">
+                    <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-accent font-black text-2xl border-2 border-secondary shadow-lg">
+                      {t.name.charAt(0)}
+                    </div>
+                    <div className="text-left">
+                      <p className="font-heading text-2xl font-bold tracking-widest">{t.name}</p>
+                      <p className="text-secondary/40 text-sm font-bold uppercase tracking-widest">{t.role}</p>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -10,7 +10,7 @@
 
 html { scroll-behavior: smooth; }
 body { 
-  overflow-x: hidden; 
+  overflow-x: clip; 
   font-family: var(--font-body); 
   background: var(--primary); 
   color: #1a1a1a; 
